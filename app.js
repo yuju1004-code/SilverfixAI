@@ -28,7 +28,11 @@ window.App.createSpeechRecognizer = createSpeechRecognizer;
 let activeRingtone = null; // Dual tone oscillators container
 
 // --- DOM Initialization ---
-initApp();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 
 function initApp() {
   loadStateFromStorage();

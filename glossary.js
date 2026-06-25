@@ -88,7 +88,11 @@ const GLOSSARY_DB = [
   }
 ];
 
-initGlossary();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initGlossary);
+} else {
+  initGlossary();
+}
 
 function initGlossary() {
   const container = document.getElementById('glossary-items-container');

@@ -466,4 +466,8 @@ window.CallSimulator = {
 };
 
 // Auto-init call simulator
-window.CallSimulator.init();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => window.CallSimulator.init());
+} else {
+  window.CallSimulator.init();
+}

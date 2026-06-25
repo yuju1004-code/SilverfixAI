@@ -4,7 +4,11 @@
    inside the mock mobile device with highlight pointers and TTS guides.
    ========================================================================== */
 
-initSimulator();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSimulator);
+} else {
+  initSimulator();
+}
 
 function initSimulator() {
   const simSelector = document.getElementById('sim-selector');

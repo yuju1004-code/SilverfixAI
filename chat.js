@@ -4,7 +4,11 @@
    semantic voice trigger redirection to the call simulator.
    ========================================================================== */
 
-initChat();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initChat);
+} else {
+  initChat();
+}
 
 function initChat() {
   const textInput = document.getElementById('chat-text-input');

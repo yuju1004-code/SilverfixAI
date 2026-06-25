@@ -4,7 +4,11 @@
    comment generation, and HTML5 Canvas drawing PNG polaroid downloader.
    ========================================================================== */
 
-initDiary();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initDiary);
+} else {
+  initDiary();
+}
 
 function initDiary() {
   const recordBtn = document.getElementById('diary-record-btn');
