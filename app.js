@@ -4,8 +4,9 @@
    and Web Audio API synthesized telephone ringtone triggers.
    ========================================================================== */
 
-// --- Global App State ---
-const State = {
+// --- Global App State & Hook initialization ---
+window.App = window.App || {};
+window.App.State = {
   activeTab: 'tab-chat',
   persona: 'boy', // 'boy' (Bareumi) or 'girl' (Dajeongi)
   highContrast: false,
@@ -15,6 +16,14 @@ const State = {
   apiKey: '',
   voices: []
 };
+const State = window.App.State; // Local alias
+
+// Bind hooks immediately to prevent late-loading module exceptions
+window.App.speak = speak;
+window.App.playClickSound = playClickSound;
+window.App.startCallingAudio = startCallingAudio;
+window.App.stopCallingAudio = stopCallingAudio;
+window.App.createSpeechRecognizer = createSpeechRecognizer;
 
 let activeRingtone = null; // Dual tone oscillators container
 
@@ -433,12 +442,4 @@ function createSpeechRecognizer(onResult, onStatusChange) {
   return recognizer;
 }
 
-// Export hooks
-window.App = {
-  State,
-  speak,
-  playClickSound,
-  startCallingAudio,
-  stopCallingAudio,
-  createSpeechRecognizer
-};
+
