@@ -1,7 +1,7 @@
 /* ==========================================================================
-   SilverFix AI: Tech Glossary Module (glossary.js)
-   Maintains the senior-accessible database of digital words and handles
-   searching, category filtering, and TTS reading of glossary terms.
+   SilverFix AI 2.0: Paginated Tech Glossary Module (glossary.js)
+   Renders tech glossary cards with 3 items per page. Includes large previous/next
+   buttons for senior accessibility, category filtering, search, and TTS readout.
    ========================================================================== */
 
 const GLOSSARY_DB = [
@@ -88,28 +88,36 @@ const GLOSSARY_DB = [
   }
 ];
 
-document.addEventListener('DOMContentLoaded', () => {
-  initGlossary();
-});
+initGlossary();
 
 function initGlossary() {
   const container = document.getElementById('glossary-items-container');
   const searchInput = document.getElementById('glossary-search');
   const filterButtons = document.querySelectorAll('.filter-btn');
+  
+  // Pagination elements
+  const prevBtn = document.getElementById('pg-prev-btn');
+  const nextBtn = document.getElementById('pg-next-btn');
+  const pageLabel = document.getElementById('pg-number-info');
 
   let currentCategory = 'all';
   let searchQuery = '';
+  
+  // Pagination State
+  let currentPage = 1;
+  const itemsPerPage = 3;
 
-  // Render database cards initially
+  // Render cards initially
   renderCards();
 
   // Search input change handler
   searchInput.addEventListener('input', (e) => {
     searchQuery = e.target.value.toLowerCase().replace(/\s+/g, '');
+    currentPage = 1; // Reset to page 1 on search
     renderCards();
   });
 
-  // Category filter handlers
+  // Category filters handler
   filterButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
       if (window.App && window.App.playClickSound) {
@@ -119,19 +127,38 @@ function initGlossary() {
       e.currentTarget.classList.add('active');
 
       currentCategory = e.currentTarget.getAttribute('data-category');
+      currentPage = 1; // Reset to page 1 on category switch
       renderCards();
     });
   });
 
-  // Render glossary items helper
-  function renderCards() {
-    container.innerHTML = '';
+  // Pagination button click handler
+  prevBtn.addEventListener('click', () => {
+    if (currentPage > 1) {
+      if (window.App && window.App.playClickSound) window.App.playClickSound();
+      currentPage--;
+      renderCards();
+      window.App.speak(`${currentPage}페이지로 이전 완료`);
+    }
+  });
 
-    const filtered = GLOSSARY_DB.filter(item => {
-      // Category Match
+  nextBtn.addEventListener('click', () => {
+    // Determine maximum page count
+    const filteredList = getFilteredList();
+    const totalPages = Math.ceil(filteredList.length / itemsPerPage);
+    if (currentPage < totalPages) {
+      if (window.App && window.App.playClickSound) window.App.playClickSound();
+      currentPage++;
+      renderCards();
+      window.App.speak(`${currentPage}페이지로 다음 완료`);
+    }
+  });
+
+  // Helper calculating filters
+  function getFilteredList() {
+    return GLOSSARY_DB.filter(item => {
       const matchesCategory = (currentCategory === 'all' || item.category === currentCategory);
       
-      // Search Match
       const plainTerm = item.term.toLowerCase().replace(/\s+/g, '');
       const plainDef = item.definition.toLowerCase().replace(/\s+/g, '');
       const plainAnalogy = item.analogy.toLowerCase().replace(/\s+/g, '');
@@ -143,23 +170,48 @@ function initGlossary() {
 
       return matchesCategory && matchesSearch;
     });
+  }
 
-    if (filtered.length === 0) {
+  // Render glossary items helper
+  function renderCards() {
+    container.innerHTML = '';
+    const filteredList = getFilteredList();
+    const totalPages = Math.ceil(filteredList.length / itemsPerPage) || 1;
+
+    // Boundary corrections
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+    if (currentPage < 1) {
+      currentPage = 1;
+    }
+
+    // Slice dataset for current page
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const pageItems = filteredList.slice(startIndex, startIndex + itemsPerPage);
+
+    // Update Pagination panel label & buttons
+    pageLabel.textContent = `${currentPage} / ${totalPages} 쪽`;
+    prevBtn.disabled = (currentPage === 1);
+    nextBtn.disabled = (currentPage === totalPages);
+
+    if (pageItems.length === 0) {
       container.innerHTML = `
-        <div class="system-msg" style="width: 100%; padding: 40px 20px; text-align: center;">
+        <div class="system-msg" style="width: 100%; padding: 40px 20px; text-align: center; border-radius: 12px;">
           🔍 찾는 단어가 아직 사전에 없네요.<br>
-          질문을 '손주 대화' 방에서 물어보시면 설명해 드릴게요!
+          대화방에서 손주에게 물어보시면 다정하게 알려 드릴게요!
         </div>
       `;
       return;
     }
 
-    filtered.forEach(item => {
+    // Render cards list
+    pageItems.forEach(item => {
       const card = document.createElement('div');
       card.className = 'glossary-card';
       card.id = `gcard-${item.id}`;
 
-      // Card Header
+      // Card top
       const topRow = document.createElement('div');
       topRow.className = 'glossary-card-top';
       
@@ -186,14 +238,14 @@ function initGlossary() {
       analogyBox.innerHTML = `
         <strong>💡 아주 쉬운 비유:</strong>
         <p>${item.analogy}</p>
-        <p style="margin-top: 8px; color: var(--text-muted); font-size: 16px;">👉 <b>꿀팁:</b> ${item.tip}</p>
+        <p style="margin-top: 8px; color: var(--text-muted); font-size: 15px;">👉 <b>꿀팁:</b> ${item.tip}</p>
       `;
       card.appendChild(analogyBox);
 
-      // Speak button at the bottom of the card
+      // Read audio button
       const readBtn = document.createElement('button');
       readBtn.className = 'msg-tts-btn';
-      readBtn.style.marginTop = '15px';
+      readBtn.style.marginTop = '12px';
       readBtn.innerHTML = '🔊 목소리로 전체 읽기';
       readBtn.addEventListener('click', () => {
         if (window.App && window.App.playClickSound) {

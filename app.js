@@ -1,12 +1,12 @@
 /* ==========================================================================
-   SilverFix AI: Core Application Logic (app.js)
-   Manages tab navigation, high contrast toggle, sound effects, persona states,
-   and core wrappers for Web Speech API (TTS & STT).
+   SilverFix AI 2.0: Core Application Control (app.js)
+   Controls unified layouts, left sidebar routing, settings drawer configuration,
+   and Web Audio API synthesized telephone ringtone triggers.
    ========================================================================== */
 
 // --- Global App State ---
 const State = {
-  activeTab: 'tab-dashboard',
+  activeTab: 'tab-chat',
   persona: 'boy', // 'boy' (Bareumi) or 'girl' (Dajeongi)
   highContrast: false,
   soundEnabled: true,
@@ -16,19 +16,18 @@ const State = {
   voices: []
 };
 
-// --- DOM Elements ---
-document.addEventListener('DOMContentLoaded', () => {
-  initApp();
-});
+let activeRingtone = null; // Dual tone oscillators container
+
+// --- DOM Initialization ---
+initApp();
 
 function initApp() {
   loadStateFromStorage();
   setupNavigation();
   setupPreferences();
-  setupPersona();
   setupSpeechEngine();
   
-  // Dispatch load event for other scripts to initialize
+  // Dispatch load event
   window.dispatchEvent(new CustomEvent('appReady'));
 }
 
@@ -39,14 +38,6 @@ function loadStateFromStorage() {
     State.highContrast = true;
     document.body.classList.add('high-contrast-mode');
     document.getElementById('contrast-btn').classList.add('active');
-  }
-
-  const savedSound = localStorage.getItem('sf_soundEnabled');
-  if (savedSound === 'false') {
-    State.soundEnabled = false;
-    document.getElementById('sound-btn').classList.remove('active');
-    document.querySelector('.sound-on-icon').style.display = 'none';
-    document.querySelector('.sound-off-icon').style.display = 'block';
   }
 
   const savedSpeed = localStorage.getItem('sf_voiceSpeed');
@@ -61,7 +52,7 @@ function loadStateFromStorage() {
     State.aiProvider = savedProvider;
     document.getElementById('ai-provider-select').value = State.aiProvider;
     if (State.aiProvider !== 'mock') {
-      document.getElementById('api-key-group').style.display = 'flex';
+      document.getElementById('api-key-group').style.display = 'block';
     }
   }
 
@@ -70,49 +61,53 @@ function loadStateFromStorage() {
     State.apiKey = savedKey;
     document.getElementById('api-key-input').value = savedKey;
   }
+
+  const savedPersona = localStorage.getItem('sf_persona');
+  if (savedPersona) {
+    State.persona = savedPersona;
+  }
+  updatePersonaElements();
 }
 
-// --- Navigation Handling ---
+// --- Sidebar Tab Routing ---
 function setupNavigation() {
-  const navButtons = document.querySelectorAll('.nav-btn');
+  const sidebarButtons = document.querySelectorAll('.app-sidebar .nav-btn');
   const panels = document.querySelectorAll('.tab-panel');
-  
+
   function switchTab(targetId) {
     playClickSound();
-    
-    // Deactivate previous
-    navButtons.forEach(btn => btn.classList.remove('active'));
+
+    // Deactivate previous buttons and panels
+    sidebarButtons.forEach(btn => btn.classList.remove('active'));
     panels.forEach(panel => panel.classList.remove('active'));
-    
-    // Activate target
-    const activeBtn = document.querySelector(`.nav-btn[data-target="${targetId}"]`);
+
+    // Activate target button
+    const activeBtn = document.querySelector(`.app-sidebar .nav-btn[data-target="${targetId}"]`);
     if (activeBtn) activeBtn.classList.add('active');
-    
+
+    // Activate target panel
     const activePanel = document.getElementById(targetId);
     if (activePanel) activePanel.classList.add('active');
-    
+
     State.activeTab = targetId;
-    
-    // Trigger voice greeting if switching to dashboard or chat
+
+    // Trigger tab specific sounds or speech
     if (targetId === 'tab-dashboard') {
       speakGreeting();
     } else if (targetId === 'tab-chat') {
-      // Trigger chat initialization if needed
       window.dispatchEvent(new CustomEvent('chatTabActive'));
-    } else if (targetId === 'tab-simulator') {
-      window.dispatchEvent(new CustomEvent('simTabActive'));
     }
   }
 
-  // Navbar clicks
-  navButtons.forEach(btn => {
+  // Bind sidebar button click
+  sidebarButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
       const target = e.currentTarget.getAttribute('data-target');
       switchTab(target);
     });
   });
 
-  // Inner-page dashboard navigation triggers
+  // Bind inner page quick links (Dashboard cards)
   document.querySelectorAll('.nav-trigger').forEach(trigger => {
     trigger.addEventListener('click', (e) => {
       const target = e.currentTarget.getAttribute('data-target');
@@ -121,47 +116,25 @@ function setupNavigation() {
   });
 }
 
-// --- Theme & Sound Toggles ---
+// --- Preferences, High Contrast & Settings Setup ---
 function setupPreferences() {
-  // High Contrast Switch
+  // Contrast Toggle (Header button)
   const contrastBtn = document.getElementById('contrast-btn');
   contrastBtn.addEventListener('click', () => {
     State.highContrast = !State.highContrast;
     document.body.classList.toggle('high-contrast-mode', State.highContrast);
     contrastBtn.classList.toggle('active', State.highContrast);
+    
+    if (State.highContrast) {
+      speak("글자를 선명하게 보여주는 고대비 모드가 켜졌습니다.");
+    } else {
+      speak("일반 화면 모드로 복구했습니다.");
+    }
     localStorage.setItem('sf_highContrast', State.highContrast);
     playClickSound();
-    
-    // Announce mode change
-    const msg = State.highContrast 
-      ? "글자를 크게 보는 고대비 모드가 켜졌습니다." 
-      : "일반 화면 모드로 돌아왔습니다.";
-    speak(msg);
   });
 
-  // Sound Toggle
-  const soundBtn = document.getElementById('sound-btn');
-  soundBtn.addEventListener('click', () => {
-    State.soundEnabled = !State.soundEnabled;
-    soundBtn.classList.toggle('active', State.soundEnabled);
-    localStorage.setItem('sf_soundEnabled', State.soundEnabled);
-    
-    const onIcon = document.querySelector('.sound-on-icon');
-    const offIcon = document.querySelector('.sound-off-icon');
-    if (State.soundEnabled) {
-      onIcon.style.display = 'block';
-      offIcon.style.display = 'none';
-      playClickSound();
-      speak("소리가 켜졌습니다.");
-    } else {
-      onIcon.style.display = 'none';
-      offIcon.style.display = 'block';
-      // Stop ongoing voice synthesis
-      window.speechSynthesis.cancel();
-    }
-  });
-
-  // Voice Speed slider
+  // Speed Slider (Settings tab)
   const speedSlider = document.getElementById('voice-speed-slider');
   speedSlider.addEventListener('input', (e) => {
     State.voiceSpeed = parseFloat(e.target.value);
@@ -170,137 +143,235 @@ function setupPreferences() {
 
   speedSlider.addEventListener('change', () => {
     localStorage.setItem('sf_voiceSpeed', State.voiceSpeed);
-    speak("목소리 속도가 이 정도로 설정되었습니다.");
+    speak("목소리 빠르기를 조절했습니다.");
   });
 
-  // Voice Test Button
-  document.getElementById('voice-test-btn').addEventListener('click', () => {
-    playClickSound();
-    speak("안녕하세요! 귀에 잘 들리는 목소리 속도인지 확인해 보세요.");
-  });
-
-  // AI Provider Select
-  const providerSelect = document.getElementById('ai-provider-select');
-  providerSelect.addEventListener('change', (e) => {
-    const val = e.target.value;
-    const keyGroup = document.getElementById('api-key-group');
-    if (val === 'mock') {
-      keyGroup.style.display = 'none';
-    } else {
-      keyGroup.style.display = 'flex';
-    }
-  });
-
-  // Save Settings
-  document.getElementById('save-settings-btn').addEventListener('click', () => {
-    playClickSound();
-    State.aiProvider = document.getElementById('ai-provider-select').value;
-    State.apiKey = document.getElementById('api-key-input').value;
-    
-    localStorage.setItem('sf_aiProvider', State.aiProvider);
-    localStorage.setItem('sf_apiKey', State.apiKey);
-    
-    speak("설정이 저장되었습니다.");
-    alert("설정이 저장되었습니다.");
-  });
-
-  // Reset Button
-  document.getElementById('reset-app-btn').addEventListener('click', () => {
-    if (confirm("정말로 모든 설정을 지우고 처음 상태로 돌아가시겠습니까?")) {
-      localStorage.clear();
-      location.reload();
-    }
-  });
-}
-
-// --- Persona Switching ---
-function setupPersona() {
+  // Persona buttons in Settings tab
   const pBtns = document.querySelectorAll('.persona-btn');
-  const boyAvatar = document.getElementById('avatar-boy');
-  const girlAvatar = document.getElementById('avatar-girl');
-
   pBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       playClickSound();
       pBtns.forEach(b => b.classList.remove('active'));
       e.currentTarget.classList.add('active');
-
-      const pType = e.currentTarget.getAttribute('data-persona');
-      State.persona = pType;
-
-      if (pType === 'boy') {
-        boyAvatar.style.display = 'block';
-        girlAvatar.style.display = 'none';
-        document.getElementById('dynamic-intro').innerHTML = '오늘 하루도 건강하고 즐겁게 보내셨나요? 디지털 비서이자 손주인 <strong>바름이</strong>입니다. 스마트폰 사용이 어려우실 땐 언제든 저에게 물어보세요!';
-      } else {
-        boyAvatar.style.display = 'none';
-        girlAvatar.style.display = 'block';
-        document.getElementById('dynamic-intro').innerHTML = '어르신~ 오늘 날씨가 참 좋아요! 애교 만점 손녀 <strong>다정이</strong>가 왔어요. 궁금한 점이 있으시면 무엇이든 옥구슬 같은 목소리로 대답해 드릴게요!';
-      }
-
-      updateAvatarsInApp();
+      
+      State.persona = e.currentTarget.getAttribute('data-persona-set');
+      updatePersonaElements();
       speakGreeting();
     });
   });
 
-  // Dashboard Greeting Speaker Button
-  document.getElementById('dashboard-tts-btn').addEventListener('click', () => {
+  // Voice speed test button
+  document.getElementById('voice-test-btn').addEventListener('click', () => {
     playClickSound();
-    speakGreeting(true); // force speak
+    speak("안녕하세요! 듣기 편한 목소리 빠르기인지 확인해보세요.");
   });
+
+  // AI Provider Select dropdown
+  const providerSelect = document.getElementById('ai-provider-select');
+  providerSelect.addEventListener('change', (e) => {
+    const keyGroup = document.getElementById('api-key-group');
+    if (e.target.value === 'mock') {
+      keyGroup.style.display = 'none';
+    } else {
+      keyGroup.style.display = 'block';
+    }
+  });
+
+  // Save Settings button
+  document.getElementById('save-settings-btn').addEventListener('click', () => {
+    playClickSound();
+    State.aiProvider = document.getElementById('ai-provider-select').value;
+    State.apiKey = document.getElementById('api-key-input').value;
+
+    localStorage.setItem('sf_aiProvider', State.aiProvider);
+    localStorage.setItem('sf_apiKey', State.apiKey);
+    localStorage.setItem('sf_persona', State.persona);
+
+    speak("설정이 저장되었습니다.");
+    alert("설정이 저장되었습니다.");
+  });
+
+  // Reset App Button
+  document.getElementById('reset-app-btn').addEventListener('click', () => {
+    if (confirm("정말로 모든 데이터를 지우고 처음 상태로 되돌리겠습니까?")) {
+      localStorage.clear();
+      location.reload();
+    }
+  });
+
+  // Bind Dashboard speech greeting repeat
+  const dashTtsBtn = document.getElementById('dashboard-tts-btn');
+  if (dashTtsBtn) {
+    dashTtsBtn.addEventListener('click', () => {
+      playClickSound();
+      speakGreeting();
+    });
+  }
 }
 
-// Updates small avatars in sub-tabs based on chosen grandchild
-function updateAvatarsInApp() {
+// Update UI elements depending on active grandchild
+function updatePersonaElements() {
+  const isBoy = (State.persona === 'boy');
+  
+  // Dashboard Avatars Toggle
+  const boyAv = document.getElementById('avatar-boy');
+  const girlAv = document.getElementById('avatar-girl');
+  const dynIntro = document.getElementById('dynamic-intro');
+  if (isBoy) {
+    if (boyAv) boyAv.style.display = 'block';
+    if (girlAv) girlAv.style.display = 'none';
+    if (dynIntro) {
+      dynIntro.innerHTML = '오늘 하루도 건강하고 즐겁게 보내셨나요? 디지털 비서이자 손주인 <strong>바름이</strong>입니다. 스마트폰 사용이 어려우실 땐 언제든 저에게 물어보세요!';
+    }
+  } else {
+    if (boyAv) boyAv.style.display = 'none';
+    if (girlAv) girlAv.style.display = 'block';
+    if (dynIntro) {
+      dynIntro.innerHTML = '어르신~ 오늘 날씨가 참 좋아요! 애교 만점 손녀 <strong>다정이</strong>가 왔어요. 궁금한 점이 있으시면 무엇이든 상냥하게 가르쳐 드릴게요!';
+    }
+  }
+
+  // Header status indicator label
+  const statusLabel = document.getElementById('active-persona-status');
+  if (statusLabel) {
+    statusLabel.textContent = isBoy ? '손주 바름이' : '손녀 다정이';
+  }
+
+  // Sub-tab avatars
   const miniAvatars = document.querySelectorAll('.avatar-mini.active-avatar, .comment-author-avatar');
   miniAvatars.forEach(av => {
     av.classList.remove('boy', 'girl');
     av.classList.add(State.persona);
   });
-  
+
   const helperName = document.getElementById('guide-helper-name');
   if (helperName) {
-    helperName.textContent = State.persona === 'boy' ? '손주 바름이' : '손녀 다정이';
+    helperName.textContent = isBoy ? '손주 바름이' : '손녀 다정이';
+  }
+
+  // Settings Persona active class
+  document.querySelectorAll('.persona-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-persona-set') === State.persona);
+  });
+}
+
+function speakGreeting() {
+  const greetingTextEl = document.getElementById('dynamic-greeting');
+  const introTextEl = document.getElementById('dynamic-intro');
+  const greetingText = greetingTextEl ? greetingTextEl.textContent : "";
+  const introText = introTextEl ? introTextEl.textContent : "";
+  if (greetingText || introText) {
+    speak(`${greetingText} ${introText}`);
+  } else {
+    // Fallback welcome message based on active persona
+    const text = State.persona === 'boy'
+      ? "안녕하세요 할머니! 오늘 하루 잘 보내셨나요? 든든한 손주 바름이입니다. 스마트폰에 대해 물어보시거나 아래 버튼들을 눌러 보이스톡이나 전화를 걸어보세요!"
+      : "할머니 안녕~! 오늘 하루 기분 좋은 일 있으셨나요? 애교쟁이 다정이가 왔어요! 저랑 보이스톡 하고 싶으시면 아래 버튼을 콕 눌러주셔요~";
+    speak(text);
   }
 }
 
-// Speaks greeting on home
-function speakGreeting(force = false) {
-  const greetingText = document.getElementById('dynamic-greeting').textContent;
-  const introText = document.getElementById('dynamic-intro').textContent;
-  const fullSpeech = `${greetingText} ${introText}`;
-  speak(fullSpeech);
+// --- Web Audio synthesized beeps & Ringing audio ---
+function playClickSound() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 note
+    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.12);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.12);
+  } catch (e) {}
 }
 
-// --- Sound Effects Player ---
-function playClickSound() {
-  if (!State.soundEnabled) return;
-  const clickAudio = document.getElementById('audio-click');
-  if (clickAudio) {
-    clickAudio.currentTime = 0;
-    // Play a synthesizer generated beep using Web Audio API for cross-browser reliability
-    try {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 note
-      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.15);
-    } catch (e) {
-      console.log("Audio API not supported or blocked");
+function startCallingAudio(type) {
+  stopCallingAudio();
+
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    if (type === 'voicetalk') {
+      const chimeInterval = setInterval(() => {
+        const playTone = (freq, startOffset, duration) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime + startOffset);
+          gain.gain.setValueAtTime(0, audioCtx.currentTime + startOffset);
+          gain.gain.linearRampToValueAtTime(0.06, audioCtx.currentTime + startOffset + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + startOffset + duration);
+          
+          osc.start(audioCtx.currentTime + startOffset);
+          osc.stop(audioCtx.currentTime + startOffset + duration);
+        };
+
+        playTone(659.25, 0.0, 0.25); // E5
+        playTone(783.99, 0.1, 0.25); // G5
+        playTone(1046.50, 0.2, 0.4); // C6
+      }, 2200);
+
+      activeRingtone = {
+        stop: () => {
+          clearInterval(chimeInterval);
+          audioCtx.close();
+        }
+      };
+
+    } else {
+      const ringInterval = setInterval(() => {
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc1.type = 'sine';
+        osc1.frequency.value = 440;
+        osc2.type = 'sine';
+        osc2.frequency.value = 480;
+        
+        gain.gain.setValueAtTime(0, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.06, audioCtx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime + 1.2);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.3);
+        
+        osc1.start();
+        osc2.start();
+        osc1.stop(audioCtx.currentTime + 1.3);
+        osc2.stop(audioCtx.currentTime + 1.3);
+      }, 3000);
+
+      activeRingtone = {
+        stop: () => {
+          clearInterval(ringInterval);
+          audioCtx.close();
+        }
+      };
     }
+  } catch (e) {}
+}
+
+function stopCallingAudio() {
+  if (activeRingtone) {
+    try {
+      activeRingtone.stop();
+    } catch(e) {}
+    activeRingtone = null;
   }
 }
 
 // --- Speech Synthesis (Text-to-Speech) Wrapper ---
 function setupSpeechEngine() {
   if ('speechSynthesis' in window) {
-    // Chrome loads voices asynchronously
     window.speechSynthesis.onvoiceschanged = () => {
       State.voices = window.speechSynthesis.getVoices();
     };
@@ -309,21 +380,13 @@ function setupSpeechEngine() {
 }
 
 function speak(text, callback) {
-  if (!State.soundEnabled) {
-    if (callback) callback();
-    return;
-  }
-  
   if ('speechSynthesis' in window) {
-    // Cancel any current speaking
     window.speechSynthesis.cancel();
     
-    // Create utterance
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'ko-KR';
     utterance.rate = State.voiceSpeed;
     
-    // Choose Korean Voice (prefer higher-quality Google or Microsoft voices if available)
     if (State.voices.length > 0) {
       const koVoice = State.voices.find(v => v.lang === 'ko-KR' || v.lang.startsWith('ko'));
       if (koVoice) {
@@ -334,27 +397,19 @@ function speak(text, callback) {
     utterance.onend = () => {
       if (callback) callback();
     };
-    
-    utterance.onerror = (e) => {
-      console.error("Speech synthesis error", e);
+    utterance.onerror = () => {
       if (callback) callback();
     };
-    
     window.speechSynthesis.speak(utterance);
   } else {
-    console.warn("Speech Synthesis not supported in this browser.");
     if (callback) callback();
   }
 }
 
-// --- Speech Recognition (Speech-to-Text) Creator ---
+// --- Speech Recognition (Speech-to-Text) Wrapper ---
 function createSpeechRecognizer(onResult, onStatusChange) {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  
-  if (!SpeechRecognition) {
-    console.error("Speech recognition not supported.");
-    return null;
-  }
+  if (!SpeechRecognition) return null;
 
   const recognizer = new SpeechRecognition();
   recognizer.continuous = false;
@@ -364,16 +419,12 @@ function createSpeechRecognizer(onResult, onStatusChange) {
   recognizer.onstart = () => {
     if (onStatusChange) onStatusChange('listening');
   };
-
   recognizer.onerror = (event) => {
-    console.error("Speech recognition error", event.error);
     if (onStatusChange) onStatusChange('error', event.error);
   };
-
   recognizer.onend = () => {
     if (onStatusChange) onStatusChange('idle');
   };
-
   recognizer.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
     if (onResult) onResult(transcript);
@@ -382,11 +433,12 @@ function createSpeechRecognizer(onResult, onStatusChange) {
   return recognizer;
 }
 
-// Export functions to global scope
+// Export hooks
 window.App = {
   State,
   speak,
   playClickSound,
-  createSpeechRecognizer,
-  updateAvatarsInApp
+  startCallingAudio,
+  stopCallingAudio,
+  createSpeechRecognizer
 };
