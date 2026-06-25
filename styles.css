@@ -1622,3 +1622,73 @@ body.high-contrast-mode .guide-sound-btn {
   color: #ef4444;
   animation: blinkText 1.5s infinite alternate;
 }
+
+/* --- Mobile Responsive Layout (Left Sidebar transforms into bottom navigation bar on mobile <= 768px) --- */
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column-reverse; /* Put navigation bar at the bottom */
+  }
+
+  .app-sidebar {
+    width: 100%;
+    height: 80px;
+    flex-direction: row; /* Horizontal layout */
+    border-right: none;
+    border-top: 1.5px solid var(--border-color);
+    padding: 0;
+    gap: 0;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  body.high-contrast-mode .app-sidebar {
+    border-top: 3px solid var(--text-main);
+    border-right: none;
+  }
+
+  .sidebar-logo {
+    display: none; /* Hide logo inside mobile bottom bar */
+  }
+
+  .sidebar-menu {
+    flex-direction: row; /* Align menu items horizontally */
+    height: 100%;
+    align-items: center;
+    gap: 0;
+  }
+
+  .sidebar-menu .nav-btn {
+    flex: 1;
+    height: 100%;
+    padding: 8px 0;
+    border-left: none;
+    border-bottom: 4px solid transparent;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: center;
+  }
+
+  .sidebar-menu .nav-btn:hover {
+    background: none;
+  }
+
+  .sidebar-menu .nav-btn.active {
+    background: var(--primary-light);
+    border-left: none;
+    border-bottom: 5px solid var(--primary);
+  }
+
+  body.high-contrast-mode .sidebar-menu .nav-btn.active {
+    border-bottom-width: 8px;
+    border-left: none;
+    background: var(--primary-light);
+  }
+
+  .sidebar-menu .nav-icon {
+    font-size: 24px;
+  }
+
+  .sidebar-menu .nav-label {
+    font-size: 14px;
+  }
+}
