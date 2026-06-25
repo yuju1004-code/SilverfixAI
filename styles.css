@@ -1629,6 +1629,11 @@ body.high-contrast-mode .guide-sound-btn {
     flex-direction: column-reverse; /* Put navigation bar at the bottom */
   }
 
+  .main-content-wrapper {
+    height: auto;
+    flex: 1;
+  }
+
   .app-sidebar {
     width: 100%;
     height: 80px;
@@ -1691,4 +1696,9 @@ body.high-contrast-mode .guide-sound-btn {
   .sidebar-menu .nav-label {
     font-size: 14px;
   }
+}
+
+/* Guarantee touch resolution by bypassing inner span elements */
+.sidebar-menu .nav-btn * {
+  pointer-events: none;
 }

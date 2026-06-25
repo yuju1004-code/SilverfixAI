@@ -11,7 +11,8 @@ if (document.readyState === 'loading') {
 }
 
 function initSimulator() {
-  const simSelector = document.getElementById('sim-selector');
+  try {
+    const simSelector = document.getElementById('sim-selector');
   const simActiveContainer = document.getElementById('sim-active-container');
   const simTitle = document.getElementById('sim-title');
   const simBackBtn = document.getElementById('sim-back-btn');
@@ -608,5 +609,8 @@ function initSimulator() {
     if (window.App && window.App.speak) {
       window.App.speak(textToSpeak);
     }
+  }
+  } catch (e) {
+    console.error("Error in initSimulator:", e);
   }
 }

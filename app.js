@@ -35,13 +35,31 @@ if (document.readyState === 'loading') {
 }
 
 function initApp() {
-  loadStateFromStorage();
-  setupNavigation();
-  setupPreferences();
-  setupSpeechEngine();
+  try {
+    loadStateFromStorage();
+  } catch (e) {
+    console.error("Error loading state:", e);
+  }
+  try {
+    setupNavigation();
+  } catch (e) {
+    console.error("Error setting up navigation:", e);
+  }
+  try {
+    setupPreferences();
+  } catch (e) {
+    console.error("Error setting up preferences:", e);
+  }
+  try {
+    setupSpeechEngine();
+  } catch (e) {
+    console.error("Error setting up speech engine:", e);
+  }
   
   // Dispatch load event
-  window.dispatchEvent(new CustomEvent('appReady'));
+  try {
+    window.dispatchEvent(new CustomEvent('appReady'));
+  } catch (e) {}
 }
 
 // --- Local Storage Management ---
@@ -115,7 +133,8 @@ function setupNavigation() {
   // Bind sidebar button click
   sidebarButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const target = e.currentTarget.getAttribute('data-target');
+      const btnElement = e.target.closest('.nav-btn') || e.currentTarget;
+      const target = btnElement.getAttribute('data-target');
       switchTab(target);
     });
   });
@@ -123,7 +142,8 @@ function setupNavigation() {
   // Bind inner page quick links (Dashboard cards)
   document.querySelectorAll('.nav-trigger').forEach(trigger => {
     trigger.addEventListener('click', (e) => {
-      const target = e.currentTarget.getAttribute('data-target');
+      const cardElement = e.target.closest('.nav-trigger') || e.currentTarget;
+      const target = cardElement.getAttribute('data-target');
       switchTab(target);
     });
   });

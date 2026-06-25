@@ -11,7 +11,8 @@ if (document.readyState === 'loading') {
 }
 
 function initChat() {
-  const textInput = document.getElementById('chat-text-input');
+  try {
+    const textInput = document.getElementById('chat-text-input');
   const sendBtn = document.getElementById('chat-send-btn');
   const voiceBtn = document.getElementById('voice-record-btn');
   const voiceStatus = document.getElementById('voice-status-text');
@@ -212,6 +213,9 @@ function initChat() {
 
   function scrollToBottom() {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+  } catch (e) {
+    console.error("Error in initChat:", e);
   }
 }
 

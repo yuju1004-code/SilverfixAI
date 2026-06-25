@@ -95,172 +95,183 @@ if (document.readyState === 'loading') {
 }
 
 function initGlossary() {
-  const container = document.getElementById('glossary-items-container');
-  const searchInput = document.getElementById('glossary-search');
-  const filterButtons = document.querySelectorAll('.filter-btn');
-  
-  // Pagination elements
-  const prevBtn = document.getElementById('pg-prev-btn');
-  const nextBtn = document.getElementById('pg-next-btn');
-  const pageLabel = document.getElementById('pg-number-info');
+  try {
+    const container = document.getElementById('glossary-items-container');
+    const searchInput = document.getElementById('glossary-search');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    // Pagination elements
+    const prevBtn = document.getElementById('pg-prev-btn');
+    const nextBtn = document.getElementById('pg-next-btn');
+    const pageLabel = document.getElementById('pg-number-info');
 
-  let currentCategory = 'all';
-  let searchQuery = '';
-  
-  // Pagination State
-  let currentPage = 1;
-  const itemsPerPage = 3;
+    let currentCategory = 'all';
+    let searchQuery = '';
+    
+    // Pagination State
+    let currentPage = 1;
+    const itemsPerPage = 3;
 
-  // Render cards initially
-  renderCards();
-
-  // Search input change handler
-  searchInput.addEventListener('input', (e) => {
-    searchQuery = e.target.value.toLowerCase().replace(/\s+/g, '');
-    currentPage = 1; // Reset to page 1 on search
+    // Render cards initially
     renderCards();
-  });
 
-  // Category filters handler
-  filterButtons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      if (window.App && window.App.playClickSound) {
-        window.App.playClickSound();
-      }
-      filterButtons.forEach(b => b.classList.remove('active'));
-      e.currentTarget.classList.add('active');
-
-      currentCategory = e.currentTarget.getAttribute('data-category');
-      currentPage = 1; // Reset to page 1 on category switch
-      renderCards();
-    });
-  });
-
-  // Pagination button click handler
-  prevBtn.addEventListener('click', () => {
-    if (currentPage > 1) {
-      if (window.App && window.App.playClickSound) window.App.playClickSound();
-      currentPage--;
-      renderCards();
-      window.App.speak(`${currentPage}페이지로 이전 완료`);
-    }
-  });
-
-  nextBtn.addEventListener('click', () => {
-    // Determine maximum page count
-    const filteredList = getFilteredList();
-    const totalPages = Math.ceil(filteredList.length / itemsPerPage);
-    if (currentPage < totalPages) {
-      if (window.App && window.App.playClickSound) window.App.playClickSound();
-      currentPage++;
-      renderCards();
-      window.App.speak(`${currentPage}페이지로 다음 완료`);
-    }
-  });
-
-  // Helper calculating filters
-  function getFilteredList() {
-    return GLOSSARY_DB.filter(item => {
-      const matchesCategory = (currentCategory === 'all' || item.category === currentCategory);
-      
-      const plainTerm = item.term.toLowerCase().replace(/\s+/g, '');
-      const plainDef = item.definition.toLowerCase().replace(/\s+/g, '');
-      const plainAnalogy = item.analogy.toLowerCase().replace(/\s+/g, '');
-      const matchesSearch = (!searchQuery || 
-        plainTerm.includes(searchQuery) || 
-        plainDef.includes(searchQuery) ||
-        plainAnalogy.includes(searchQuery)
-      );
-
-      return matchesCategory && matchesSearch;
-    });
-  }
-
-  // Render glossary items helper
-  function renderCards() {
-    container.innerHTML = '';
-    const filteredList = getFilteredList();
-    const totalPages = Math.ceil(filteredList.length / itemsPerPage) || 1;
-
-    // Boundary corrections
-    if (currentPage > totalPages) {
-      currentPage = totalPages;
-    }
-    if (currentPage < 1) {
-      currentPage = 1;
+    // Search input change handler
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = e.target.value.toLowerCase().replace(/\s+/g, '');
+        currentPage = 1; // Reset to page 1 on search
+        renderCards();
+      });
     }
 
-    // Slice dataset for current page
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const pageItems = filteredList.slice(startIndex, startIndex + itemsPerPage);
-
-    // Update Pagination panel label & buttons
-    pageLabel.textContent = `${currentPage} / ${totalPages} 쪽`;
-    prevBtn.disabled = (currentPage === 1);
-    nextBtn.disabled = (currentPage === totalPages);
-
-    if (pageItems.length === 0) {
-      container.innerHTML = `
-        <div class="system-msg" style="width: 100%; padding: 40px 20px; text-align: center; border-radius: 12px;">
-          🔍 찾는 단어가 아직 사전에 없네요.<br>
-          대화방에서 손주에게 물어보시면 다정하게 알려 드릴게요!
-        </div>
-      `;
-      return;
-    }
-
-    // Render cards list
-    pageItems.forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'glossary-card';
-      card.id = `gcard-${item.id}`;
-
-      // Card top
-      const topRow = document.createElement('div');
-      topRow.className = 'glossary-card-top';
-      
-      const termTitle = document.createElement('h3');
-      termTitle.className = 'glossary-term';
-      termTitle.textContent = item.term;
-      topRow.appendChild(termTitle);
-
-      const badge = document.createElement('span');
-      badge.className = 'glossary-category-badge';
-      badge.textContent = item.categoryKo;
-      topRow.appendChild(badge);
-      card.appendChild(topRow);
-
-      // Definition
-      const definition = document.createElement('p');
-      definition.className = 'glossary-definition';
-      definition.textContent = item.definition;
-      card.appendChild(definition);
-
-      // Analogy Box
-      const analogyBox = document.createElement('div');
-      analogyBox.className = 'glossary-analogy-box';
-      analogyBox.innerHTML = `
-        <strong>💡 아주 쉬운 비유:</strong>
-        <p>${item.analogy}</p>
-        <p style="margin-top: 8px; color: var(--text-muted); font-size: 15px;">👉 <b>꿀팁:</b> ${item.tip}</p>
-      `;
-      card.appendChild(analogyBox);
-
-      // Read audio button
-      const readBtn = document.createElement('button');
-      readBtn.className = 'msg-tts-btn';
-      readBtn.style.marginTop = '12px';
-      readBtn.innerHTML = '🔊 목소리로 전체 읽기';
-      readBtn.addEventListener('click', () => {
+    // Category filters handler
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
         if (window.App && window.App.playClickSound) {
           window.App.playClickSound();
         }
-        const textToSpeak = `${item.term}. 뜻: ${item.definition} 쉬운 설명: ${item.analogy} 꿀팁: ${item.tip}`;
-        window.App.speak(textToSpeak);
-      });
-      card.appendChild(readBtn);
+        filterButtons.forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
 
-      container.appendChild(card);
+        currentCategory = e.currentTarget.getAttribute('data-category');
+        currentPage = 1; // Reset to page 1 on category switch
+        renderCards();
+      });
     });
+
+    // Pagination button click handler
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+          if (window.App && window.App.playClickSound) window.App.playClickSound();
+          currentPage--;
+          renderCards();
+          if (window.App && window.App.speak) window.App.speak(`${currentPage}페이지로 이전 완료`);
+        }
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        // Determine maximum page count
+        const filteredList = getFilteredList();
+        const totalPages = Math.ceil(filteredList.length / itemsPerPage);
+        if (currentPage < totalPages) {
+          if (window.App && window.App.playClickSound) window.App.playClickSound();
+          currentPage++;
+          renderCards();
+          if (window.App && window.App.speak) window.App.speak(`${currentPage}페이지로 다음 완료`);
+        }
+      });
+    }
+
+    // Helper calculating filters
+    function getFilteredList() {
+      return GLOSSARY_DB.filter(item => {
+        const matchesCategory = (currentCategory === 'all' || item.category === currentCategory);
+        
+        const plainTerm = item.term.toLowerCase().replace(/\s+/g, '');
+        const plainDef = item.definition.toLowerCase().replace(/\s+/g, '');
+        const plainAnalogy = item.analogy.toLowerCase().replace(/\s+/g, '');
+        const matchesSearch = (!searchQuery || 
+          plainTerm.includes(searchQuery) || 
+          plainDef.includes(searchQuery) ||
+          plainAnalogy.includes(searchQuery)
+        );
+
+        return matchesCategory && matchesSearch;
+      });
+    }
+
+    // Render glossary items helper
+    function renderCards() {
+      if (!container) return;
+      container.innerHTML = '';
+      const filteredList = getFilteredList();
+      const totalPages = Math.ceil(filteredList.length / itemsPerPage) || 1;
+
+      // Boundary corrections
+      if (currentPage > totalPages) {
+        currentPage = totalPages;
+      }
+      if (currentPage < 1) {
+        currentPage = 1;
+      }
+
+      // Slice dataset for current page
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const pageItems = filteredList.slice(startIndex, startIndex + itemsPerPage);
+
+      // Update Pagination panel label & buttons
+      if (pageLabel) pageLabel.textContent = `${currentPage} / ${totalPages} 쪽`;
+      if (prevBtn) prevBtn.disabled = (currentPage === 1);
+      if (nextBtn) nextBtn.disabled = (currentPage === totalPages);
+
+      if (pageItems.length === 0) {
+        container.innerHTML = `
+          <div class="system-msg" style="width: 100%; padding: 40px 20px; text-align: center; border-radius: 12px;">
+            🔍 찾는 단어가 아직 사전에 없네요.<br>
+            대화방에서 손주에게 물어보시면 다정하게 알려 드릴게요!
+          </div>
+        `;
+        return;
+      }
+
+      // Render cards list
+      pageItems.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'glossary-card';
+        card.id = `gcard-${item.id}`;
+
+        // Card top
+        const topRow = document.createElement('div');
+        topRow.className = 'glossary-card-top';
+        
+        const termTitle = document.createElement('h3');
+        termTitle.className = 'glossary-term';
+        termTitle.textContent = item.term;
+        topRow.appendChild(termTitle);
+
+        const badge = document.createElement('span');
+        badge.className = 'glossary-category-badge';
+        badge.textContent = item.categoryKo;
+        topRow.appendChild(badge);
+        card.appendChild(topRow);
+
+        // Definition
+        const definition = document.createElement('p');
+        definition.className = 'glossary-definition';
+        definition.textContent = item.definition;
+        card.appendChild(definition);
+
+        // Analogy Box
+        const analogyBox = document.createElement('div');
+        analogyBox.className = 'glossary-analogy-box';
+        analogyBox.innerHTML = `
+          <strong>💡 아주 쉬운 비유:</strong>
+          <p>${item.analogy}</p>
+          <p style="margin-top: 8px; color: var(--text-muted); font-size: 15px;">👉 <b>꿀팁:</b> ${item.tip}</p>
+        `;
+        card.appendChild(analogyBox);
+
+        // Read audio button
+        const readBtn = document.createElement('button');
+        readBtn.className = 'msg-tts-btn';
+        readBtn.style.marginTop = '12px';
+        readBtn.innerHTML = '🔊 목소리로 전체 읽기';
+        readBtn.addEventListener('click', () => {
+          if (window.App && window.App.playClickSound) {
+            window.App.playClickSound();
+          }
+          const textToSpeak = `${item.term}. 뜻: ${item.definition} 쉬운 설명: ${item.analogy} 꿀팁: ${item.tip}`;
+          if (window.App && window.App.speak) window.App.speak(textToSpeak);
+        });
+        card.appendChild(readBtn);
+
+        container.appendChild(card);
+      });
+    }
+  } catch (e) {
+    console.error("Error in initGlossary:", e);
   }
 }

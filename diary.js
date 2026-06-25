@@ -11,7 +11,8 @@ if (document.readyState === 'loading') {
 }
 
 function initDiary() {
-  const recordBtn = document.getElementById('diary-record-btn');
+  try {
+    const recordBtn = document.getElementById('diary-record-btn');
   const recordStatus = document.getElementById('diary-record-status');
   const startBtn = document.getElementById('diary-start-btn');
   const stopBtn = document.getElementById('diary-stop-btn');
@@ -297,5 +298,8 @@ function initDiary() {
       }
     }
     context.fillText(line, x, currentY);
+  }
+  } catch (e) {
+    console.error("Error in initDiary:", e);
   }
 }
