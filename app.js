@@ -102,7 +102,7 @@ function loadStateFromStorage() {
 
 // --- Sidebar Tab Routing ---
 function setupNavigation() {
-  const sidebarButtons = document.querySelectorAll('.app-sidebar .nav-btn');
+  const sidebarButtons = document.querySelectorAll('.app-navbar .nav-btn');
   const panels = document.querySelectorAll('.tab-panel');
 
   function switchTab(targetId) {
@@ -113,7 +113,7 @@ function setupNavigation() {
     panels.forEach(panel => panel.classList.remove('active'));
 
     // Activate target button
-    const activeBtn = document.querySelector(`.app-sidebar .nav-btn[data-target="${targetId}"]`);
+    const activeBtn = document.querySelector(`.app-navbar .nav-btn[data-target="${targetId}"]`);
     if (activeBtn) activeBtn.classList.add('active');
 
     // Activate target panel
@@ -130,7 +130,7 @@ function setupNavigation() {
     }
   }
 
-  // Bind sidebar button click
+  // Bind navbar button click
   sidebarButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
       const btnElement = e.target.closest('.nav-btn') || e.currentTarget;

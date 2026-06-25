@@ -13,17 +13,18 @@
 <body class="light-mode">
   <div class="app-container">
     
-    <!-- LEFT SIDEBAR NAVIGATION (Premium layout replacing bottom navbar) -->
-    <aside class="app-sidebar">
-      <div class="sidebar-logo">
-        <svg class="logo-svg" viewBox="0 0 100 100" width="56" height="56">
-          <circle cx="50" cy="50" r="46" fill="url(#logo-grad-side)"/>
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <svg class="header-logo-svg" viewBox="0 0 100 100" width="48" height="48">
+          <circle cx="50" cy="50" r="46" fill="url(#logo-grad)"/>
           <defs>
-            <linearGradient id="logo-grad-side" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="#818cf8" />
               <stop offset="100%" stop-color="#4f46e5" />
             </linearGradient>
           </defs>
+          <!-- Senior & Grandchild icon representation -->
           <circle cx="40" cy="45" r="16" fill="#ffffff" opacity="0.9"/>
           <circle cx="40" cy="42" r="10" fill="#4f46e5"/>
           <circle cx="62" cy="52" r="13" fill="#ffffff" opacity="0.95"/>
@@ -31,575 +32,508 @@
           <path d="M 24 75 Q 40 55 56 75 Z" fill="#ffffff" opacity="0.8"/>
           <path d="M 46 80 Q 62 64 78 80 Z" fill="#ffffff" opacity="0.9"/>
         </svg>
-        <span class="logo-title-mini">SilverFix</span>
-      </div>
-
-      <nav class="sidebar-menu">
-        <button class="nav-btn active" data-target="tab-chat">
-          <span class="nav-icon">💬</span>
-          <span class="nav-label">손주대화</span>
-        </button>
-        <button class="nav-btn" data-target="tab-dashboard">
-          <span class="nav-icon">🏠</span>
-          <span class="nav-label">홈화면</span>
-        </button>
-        <button class="nav-btn" data-target="tab-glossary">
-          <span class="nav-icon">📖</span>
-          <span class="nav-label">낱말사전</span>
-        </button>
-        <button class="nav-btn" data-target="tab-simulator">
-          <span class="nav-icon">🎮</span>
-          <span class="nav-label">연습실</span>
-        </button>
-        <button class="nav-btn" data-target="tab-diary">
-          <span class="nav-icon">✍️</span>
-          <span class="nav-label">목소리일기</span>
-        </button>
-        <button class="nav-btn" data-target="tab-settings">
-          <span class="nav-icon">⚙️</span>
-          <span class="nav-label">설정</span>
-        </button>
-      </nav>
-    </aside>
-
-    <!-- RIGHT MAIN CONTENT WRAPPER -->
-    <div class="main-content-wrapper">
-      
-      <!-- Top Header inside content area -->
-      <header class="app-header">
-        <div class="logo-text-header">
+        <div class="logo-text">
           <span class="sub-title">디지털 손주</span>
           <span class="main-title">SilverFix AI</span>
         </div>
-        
-        <div class="header-controls">
-          <button id="contrast-btn" class="icon-btn" aria-label="고대비 모드 전환">
-            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.2" fill="none">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 2a10 10 0 0 0 0 20V2z" fill="currentColor" />
-            </svg>
-            <span class="btn-tooltip">크게보기</span>
-          </button>
-          <div class="status-indicator">
-            <span class="status-dot"></span>
-            <span id="active-persona-status" class="status-label">손주 바름이</span>
+      </div>
+      
+      <div class="header-controls">
+        <button id="contrast-btn" class="icon-btn" aria-label="고대비 모드 전환">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 2a10 10 0 0 0 0 20V2z" fill="currentColor" />
+          </svg>
+          <span class="btn-tooltip">글자 크게 보기</span>
+        </button>
+        <button id="sound-btn" class="icon-btn active" aria-label="소리 켜기/끄기">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" class="sound-on-icon">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+          </svg>
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" class="sound-off-icon" style="display:none;">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="app-main-content">
+      
+      <!-- Tab 1: Dashboard -->
+      <section id="tab-dashboard" class="tab-panel active">
+        <div class="welcome-banner">
+          <div class="character-greeting">
+            <div class="avatar-container">
+              <div id="dashboard-avatar" class="avatar-pulse">
+                <!-- SVG Avatar (Bareumi) -->
+                <svg id="avatar-boy" viewBox="0 0 100 100" width="120" height="120" style="display: block;">
+                  <circle cx="50" cy="50" r="45" fill="#e0e7ff" stroke="#818cf8" stroke-width="3"/>
+                  <!-- Hair -->
+                  <path d="M 25 35 Q 50 10 75 35 Q 50 25 25 35 Z" fill="#312e81"/>
+                  <path d="M 23 35 Q 15 45 25 50 Z" fill="#312e81"/>
+                  <path d="M 77 35 Q 85 45 75 50 Z" fill="#312e81"/>
+                  <!-- Face -->
+                  <circle cx="50" cy="52" r="24" fill="#fed7aa"/>
+                  <!-- Eyes -->
+                  <circle cx="42" cy="48" r="3" fill="#1e1b4b"/>
+                  <circle cx="58" cy="48" r="3" fill="#1e1b4b"/>
+                  <!-- Cheeks -->
+                  <circle cx="38" cy="54" r="3" fill="#f87171" opacity="0.6"/>
+                  <circle cx="62" cy="54" r="3" fill="#f87171" opacity="0.6"/>
+                  <!-- Mouth (Smile) -->
+                  <path d="M 44 58 Q 50 64 56 58" stroke="#1e1b4b" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                  <!-- Clothes -->
+                  <path d="M 32 76 Q 50 82 68 76 L 62 92 L 38 92 Z" fill="#4f46e5"/>
+                  <path d="M 50 76 L 50 92" stroke="#ffffff" stroke-width="2"/>
+                </svg>
+                <!-- SVG Avatar (Dajeongi) -->
+                <svg id="avatar-girl" viewBox="0 0 100 100" width="120" height="120" style="display: none;">
+                  <circle cx="50" cy="50" r="45" fill="#fef3c7" stroke="#fbbf24" stroke-width="3"/>
+                  <!-- Hair (Pigtails) -->
+                  <circle cx="22" cy="60" r="10" fill="#78350f"/>
+                  <circle cx="78" cy="60" r="10" fill="#78350f"/>
+                  <path d="M 22 40 Q 50 15 78 40 Q 50 28 22 40 Z" fill="#78350f"/>
+                  <!-- Face -->
+                  <circle cx="50" cy="52" r="24" fill="#fed7aa"/>
+                  <!-- Eyes -->
+                  <circle cx="42" cy="48" r="3" fill="#1e1b4b"/>
+                  <circle cx="58" cy="48" r="3" fill="#1e1b4b"/>
+                  <!-- Cheeks -->
+                  <circle cx="36" cy="54" r="4" fill="#fda4af" opacity="0.8"/>
+                  <circle cx="64" cy="54" r="4" fill="#fda4af" opacity="0.8"/>
+                  <!-- Mouth (Happy) -->
+                  <path d="M 43 56 Q 50 66 57 56 Z" fill="#991b1b"/>
+                  <!-- Ribbons -->
+                  <circle cx="24" cy="48" r="4" fill="#f43f5e"/>
+                  <circle cx="76" cy="48" r="4" fill="#f43f5e"/>
+                  <!-- Clothes -->
+                  <path d="M 32 76 Q 50 80 68 76 L 65 92 L 35 92 Z" fill="#ec4899"/>
+                </svg>
+              </div>
+            </div>
+            <div class="greeting-bubble">
+              <h2 id="dynamic-greeting">어르신, 반갑습니다!</h2>
+              <p id="dynamic-intro">오늘 하루도 건강하고 즐겁게 보내셨나요? 디지털 비서이자 손주인 <strong>바름이</strong>입니다. 스마트폰 사용이 어려우실 땐 언제든 저에게 물어보세요!</p>
+              <button id="dashboard-tts-btn" class="text-speech-btn">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+                  <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+                  <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
+                </svg>
+                소리로 듣기
+              </button>
+            </div>
           </div>
         </div>
-      </header>
 
-      <!-- Tab panels -->
-      <main class="app-main-content">
-        
-        <!-- Tab 1: Dashboard (Restored) -->
-        <section id="tab-dashboard" class="tab-panel">
-          <div class="welcome-banner">
-            <div class="character-greeting">
-              <div class="avatar-container">
-                <div id="dashboard-avatar" class="avatar-pulse">
-                  <!-- SVG Avatar (Bareumi) -->
-                  <svg id="avatar-boy" viewBox="0 0 100 100" width="110" height="110" style="display: block;">
-                    <circle cx="50" cy="50" r="45" fill="#e0e7ff" stroke="#818cf8" stroke-width="3"/>
-                    <path d="M 25 35 Q 50 10 75 35 Q 50 25 25 35 Z" fill="#312e81"/>
-                    <path d="M 23 35 Q 15 45 25 50 Z" fill="#312e81"/>
-                    <path d="M 77 35 Q 85 45 75 50 Z" fill="#312e81"/>
-                    <circle cx="50" cy="52" r="24" fill="#fed7aa"/>
-                    <circle cx="42" cy="48" r="3" fill="#1e1b4b"/>
-                    <circle cx="58" cy="48" r="3" fill="#1e1b4b"/>
-                    <circle cx="38" cy="54" r="3" fill="#f87171" opacity="0.6"/>
-                    <circle cx="62" cy="54" r="3" fill="#f87171" opacity="0.6"/>
-                    <path d="M 44 58 Q 50 64 56 58" stroke="#1e1b4b" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                    <path d="M 32 76 Q 50 82 68 76 L 62 92 L 38 92 Z" fill="#4f46e5"/>
-                    <path d="M 50 76 L 50 92" stroke="#ffffff" stroke-width="2"/>
-                  </svg>
-                  <!-- SVG Avatar (Dajeongi) -->
-                  <svg id="avatar-girl" viewBox="0 0 100 100" width="110" height="110" style="display: none;">
-                    <circle cx="50" cy="50" r="45" fill="#fef3c7" stroke="#fbbf24" stroke-width="3"/>
-                    <circle cx="22" cy="60" r="10" fill="#78350f"/>
-                    <circle cx="78" cy="60" r="10" fill="#78350f"/>
-                    <path d="M 22 40 Q 50 15 78 40 Q 50 28 22 40 Z" fill="#78350f"/>
-                    <circle cx="50" cy="52" r="24" fill="#fed7aa"/>
-                    <circle cx="42" cy="48" r="3" fill="#1e1b4b"/>
-                    <circle cx="58" cy="48" r="3" fill="#1e1b4b"/>
-                    <circle cx="36" cy="54" r="4" fill="#fda4af" opacity="0.8"/>
-                    <circle cx="64" cy="54" r="4" fill="#fda4af" opacity="0.8"/>
-                    <path d="M 43 56 Q 50 66 57 56 Z" fill="#991b1b"/>
-                    <circle cx="24" cy="48" r="4" fill="#f43f5e"/>
-                    <circle cx="76" cy="48" r="4" fill="#f43f5e"/>
-                    <path d="M 32 76 Q 50 80 68 76 L 65 92 L 35 92 Z" fill="#ec4899"/>
-                  </svg>
-                </div>
+        <!-- Persona Switcher -->
+        <div class="persona-section">
+          <h3>손주 고르기</h3>
+          <div class="persona-buttons">
+            <button class="persona-btn active" data-persona="boy">
+              <span class="avatar-mini boy"></span>
+              <div class="persona-info">
+                <span class="p-name">든든한 손주 바름이</span>
+                <span class="p-desc">정중하고 차분하게 알려드려요</span>
               </div>
-              <div class="greeting-bubble">
-                <h2 id="dynamic-greeting">어르신, 반갑습니다!</h2>
-                <p id="dynamic-intro">오늘 하루도 건강하고 즐겁게 보내셨나요? 디지털 비서이자 손주인 <strong>바름이</strong>입니다. 스마트폰 사용이 어려우실 땐 언제든 저에게 물어보세요!</p>
-                <button id="dashboard-tts-btn" class="text-speech-btn">
-                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
-                    <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
-                    <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
-                  </svg>
-                  소리로 듣기
-                </button>
+            </button>
+            <button class="persona-btn" data-persona="girl">
+              <span class="avatar-mini girl"></span>
+              <div class="persona-info">
+                <span class="p-name">애교 많은 손녀 다정이</span>
+                <span class="p-desc">친근하고 상냥하게 알려드려요</span>
               </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Access Grid -->
+        <div class="quick-grid">
+          <button class="grid-card nav-trigger" data-target="tab-chat">
+            <div class="card-icon chat-icon">💬</div>
+            <div class="card-text">
+              <h3>손주와 대화하기</h3>
+              <p>스마트폰에 대해 궁금한 점을 목소리나 글씨로 물어보세요.</p>
+            </div>
+            <span class="arrow-indicator">➔</span>
+          </button>
+          
+          <button class="grid-card nav-trigger" data-target="tab-glossary">
+            <div class="card-icon glossary-icon">📖</div>
+            <div class="card-text">
+              <h3>스마트폰 낱말사전</h3>
+              <p>와이파이, 앱, QR코드 등 어려운 단어를 쉬운 설명으로 배워보세요.</p>
+            </div>
+            <span class="arrow-indicator">➔</span>
+          </button>
+
+          <button class="grid-card nav-trigger" data-target="tab-simulator">
+            <div class="card-icon simulator-icon">🎮</div>
+            <div class="card-text">
+              <h3>스마트폰 연습실</h3>
+              <p>음식 주문 키오스크, 택시 부르기 등을 가상으로 연습해보세요.</p>
+            </div>
+            <span class="arrow-indicator">➔</span>
+          </button>
+
+          <button class="grid-card nav-trigger" data-target="tab-diary">
+            <div class="card-icon diary-icon">✍️</div>
+            <div class="card-text">
+              <h3>목소리 일기장</h3>
+              <p>오늘 있었던 일을 말하면 예쁜 일기 카드를 만들어 드려요.</p>
+            </div>
+            <span class="arrow-indicator">➔</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Tab 2: Chat Room -->
+      <section id="tab-chat" class="tab-panel">
+        <div class="chat-layout">
+          <!-- Chat Messages Area -->
+          <div class="chat-messages-container" id="chat-messages">
+            <!-- Messages will be injected here by chat.js -->
+            <div class="message system-msg">
+              <p>💡 마이크 버튼을 누르고 편하게 말씀하시거나, 아래 입력창에 궁금한 점을 적어보세요.</p>
             </div>
           </div>
 
-          <!-- Quick Access Cards Grid -->
-          <div class="quick-grid">
-            <button class="grid-card nav-trigger" data-target="tab-chat">
-              <div class="card-icon chat-icon">💬</div>
-              <div class="card-text">
-                <h3>손주와 대화하기</h3>
-                <p>스마트폰의 궁금한 점을 물어보고, 보이스톡이나 전화를 가상으로 걸어보세요.</p>
-              </div>
-              <span class="arrow-indicator">➔</span>
-            </button>
+          <!-- Quick Suggestions -->
+          <div class="quick-suggestions">
+            <button class="suggest-btn">📶 와이파이가 뭐야?</button>
+            <button class="suggest-btn">✉️ 카톡으로 사진 어떻게 보내?</button>
+            <button class="suggest-btn">📱 플레이스토어가 뭐야?</button>
+            <button class="suggest-btn">👵 오늘 날씨 어때?</button>
+          </div>
+
+          <!-- Chat Input Area -->
+          <div class="chat-input-bar">
+            <div class="input-wrapper">
+              <input type="text" id="chat-text-input" placeholder="여기에 글을 쓰거나 마이크를 누르세요." aria-label="질문 입력창">
+              <button id="chat-send-btn" class="send-btn">전송</button>
+            </div>
             
-            <button class="grid-card nav-trigger" data-target="tab-glossary">
-              <div class="card-icon glossary-icon">📖</div>
-              <div class="card-text">
-                <h3>스마트폰 낱말사전</h3>
-                <p>와이파이, 데이터 요금 등 어려운 단어를 책장 넘기듯 편하게 배워보세요.</p>
-              </div>
-              <span class="arrow-indicator">➔</span>
-            </button>
-
-            <button class="grid-card nav-trigger" data-target="tab-simulator">
-              <div class="card-icon simulator-icon">🎮</div>
-              <div class="card-text">
-                <h3>스마트폰 연습실</h3>
-                <p>가게 계산 키오스크 주문, 택시 부르기, 유튜브 영상 검색을 실습해 보세요.</p>
-              </div>
-              <span class="arrow-indicator">➔</span>
-            </button>
-
-            <button class="grid-card nav-trigger" data-target="tab-diary">
-              <div class="card-icon diary-icon">✍️</div>
-              <div class="card-text">
-                <h3>목소리 일기장</h3>
-                <p>오늘 있었던 일상 이야기를 말하면 다정하게 손편지가 담긴 카드를 만듭니다.</p>
-              </div>
-              <span class="arrow-indicator">➔</span>
-            </button>
-          </div>
-        </section>
-
-        <!-- Tab 2: Chat Room (Set as default first screen tab-chat) -->
-        <section id="tab-chat" class="tab-panel active">
-          <div class="chat-layout">
-            <div class="chat-messages-container" id="chat-messages">
-              <div class="message system-msg">
-                <p>💡 마이크 버튼을 누르고 편하게 말씀하시거나, 아래 단추를 누르면 전화나 문자를 걸 수 있습니다.</p>
-              </div>
-            </div>
-
-            <!-- 3 Suggestion buttons (Fixed & Autogenerated) -->
-            <div class="quick-suggestions-tray">
-              <button class="suggest-btn call-action-btn" data-action="voicetalk">
-                <span class="btn-emoji">📞</span>
-                <span class="btn-lbl">보이스톡 걸어줘</span>
+            <!-- Giant Microphone Button for Voice Input -->
+            <div class="voice-input-container">
+              <button id="voice-record-btn" class="voice-mic-btn" aria-label="목소리로 말하기">
+                <span class="mic-icon">🎤</span>
+                <span class="mic-wave"></span>
               </button>
-              <button class="suggest-btn call-action-btn" data-action="phonecall">
-                <span class="btn-emoji">☎️</span>
-                <span class="btn-lbl">전화 걸어줘</span>
-              </button>
-              <button class="suggest-btn call-action-btn" data-action="textmessage">
-                <span class="btn-emoji">💬</span>
-                <span class="btn-lbl">문자 걸어줘</span>
-              </button>
-            </div>
-
-            <!-- Input controls -->
-            <div class="chat-input-bar">
-              <div class="input-wrapper">
-                <input type="text" id="chat-text-input" placeholder="여기에 글을 쓰거나 마이크를 누르세요." aria-label="질문 입력창">
-                <button id="chat-send-btn" class="send-btn">전송</button>
-              </div>
-              
-              <!-- Giant Microphone for Voice Control -->
-              <div class="voice-input-container">
-                <button id="voice-record-btn" class="voice-mic-btn" aria-label="목소리로 말하기">
-                  <span class="mic-icon">🎤</span>
-                  <span class="mic-wave"></span>
-                </button>
-                <p id="voice-status-text" class="voice-status-idle">버튼을 누르고 말씀하세요</p>
-              </div>
+              <p id="voice-status-text" class="voice-status-idle">버튼을 누르고 말씀하세요</p>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <!-- Tab 2: Glossary (with Pagination) -->
-        <section id="tab-glossary" class="tab-panel">
-          <div class="glossary-layout">
-            <div class="glossary-header">
-              <h2>📖 스마트폰 낱말사전</h2>
-              <p>어려운 IT 전문어들을 어르신의 귀에 맞추어 쉬운 비유로 설명해 드립니다.</p>
-              
-              <div class="search-box-wrapper">
-                <input type="text" id="glossary-search" placeholder="찾고 싶은 단어를 적어보세요 (예: QR, 와이파이...)" aria-label="단어 검색창">
-                <button id="clear-search-btn" style="display:none;">✕</button>
-              </div>
-              
-              <div class="category-filters">
-                <button class="filter-btn active" data-category="all">전체</button>
-                <button class="filter-btn" data-category="internet">인터넷 & 앱</button>
-                <button class="filter-btn" data-category="device">기기 작동</button>
-                <button class="filter-btn" data-category="finance">금융 & 생활</button>
-              </div>
+      <!-- Tab 3: Glossary -->
+      <section id="tab-glossary" class="tab-panel">
+        <div class="glossary-layout">
+          <div class="glossary-header">
+            <h2>📖 스마트폰 낱말사전</h2>
+            <p>자주 쓰이지만 이해하기 어려운 정보통신 단어들을 알기 쉽게 풀어 드립니다.</p>
+            
+            <!-- Search Control -->
+            <div class="search-box-wrapper">
+              <input type="text" id="glossary-search" placeholder="찾고 싶은 단어를 적어보세요 (예: QR, 쿠키...)" aria-label="단어 검색창">
+              <button id="clear-search-btn" style="display:none;">✕</button>
             </div>
-
-            <!-- Paginated glossary grid (shows 3 items) -->
-            <div class="glossary-grid" id="glossary-items-container">
-              <!-- Injected by glossary.js -->
-            </div>
-
-            <!-- PAGINATION CONTROLLER (Senior friendly large touch target) -->
-            <div class="glossary-pagination-bar" id="glossary-pagination">
-              <button id="pg-prev-btn" class="pag-nav-btn" disabled>◀ 이전 쪽</button>
-              <span id="pg-number-info" class="pag-info-label">1 / 3 쪽</span>
-              <button id="pg-next-btn" class="pag-nav-btn">다음 쪽 ▶</button>
+            
+            <!-- Category Tabs -->
+            <div class="category-filters">
+              <button class="filter-btn active" data-category="all">전체</button>
+              <button class="filter-btn" data-category="internet">인터넷 & 앱</button>
+              <button class="filter-btn" data-category="device">기기 작동</button>
+              <button class="filter-btn" data-category="finance">금융 & 생활</button>
             </div>
           </div>
-        </section>
 
-        <!-- Tab 3: Simulator -->
-        <section id="tab-simulator" class="tab-panel">
-          <div class="simulator-layout">
-            <div id="sim-selector" class="sim-view active">
-              <h2>🎮 스마트폰 연습실</h2>
-              <p>다양한 무인 기기 및 서비스를 가상 모의 화면으로 안전하게 연습해 보세요.</p>
+          <!-- Glossary Grid Cards -->
+          <div class="glossary-grid" id="glossary-items-container">
+            <!-- Glossary items will be injected by glossary.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 4: Simulator -->
+      <section id="tab-simulator" class="tab-panel">
+        <div class="simulator-layout">
+          <!-- Selection Screen (Initial state) -->
+          <div id="sim-selector" class="sim-view active">
+            <h2>🎮 스마트폰 연습실</h2>
+            <p>다양한 생활 편의 서비스를 가상 화면으로 안전하게 연습해 보세요.</p>
+            
+            <div class="sim-options">
+              <button class="sim-option-card" data-sim="kiosk">
+                <span class="sim-opt-emoji">🍔</span>
+                <div class="sim-opt-info">
+                  <h3>음식점 키오스크 주문하기</h3>
+                  <p>햄버거 매장 무인 계산기에서 메뉴를 고르고 결제하는 방법을 배웁니다.</p>
+                </div>
+                <span class="start-btn-label">시작하기</span>
+              </button>
               
-              <div class="sim-options">
-                <button class="sim-option-card" data-sim="kiosk">
-                  <span class="sim-opt-emoji">🍔</span>
-                  <div class="sim-opt-info">
-                    <h3>버거 식당 키오스크 주문하기</h3>
-                    <p>햄버거 매장 계산기에서 주문하고 신용카드 꽂는 것을 학습합니다.</p>
-                  </div>
-                  <span class="start-btn-label">시작하기</span>
-                </button>
+              <button class="sim-option-card" data-sim="taxi">
+                <span class="sim-opt-emoji">🚕</span>
+                <div class="sim-opt-info">
+                  <h3>카카오T 택시 부르기</h3>
+                  <p>목적지를 입력하고 원하는 택시 종류를 골라 호출하는 과정을 배웁니다.</p>
+                </div>
+                <span class="start-btn-label">시작하기</span>
+              </button>
+
+              <button class="sim-option-card" data-sim="youtube">
+                <span class="sim-opt-emoji">▶️</span>
+                <div class="sim-opt-info">
+                  <h3>유튜브 영상 검색해보기</h3>
+                  <p>검색창에 가수의 이름을 입력해서 좋아하는 음악을 찾는 법을 배웁니다.</p>
+                </div>
+                <span class="start-btn-label">시작하기</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Simulator View -->
+          <div id="sim-active-container" class="sim-view" style="display: none;">
+            <div class="sim-header">
+              <button id="sim-back-btn" class="back-link-btn">← 다른 연습 선택하기</button>
+              <h2 id="sim-title">연습 주제</h2>
+            </div>
+            
+            <div class="sim-workspace">
+              <!-- Left: The Virtual Phone / Kiosk screen -->
+              <div class="virtual-device-frame">
+                <!-- Phone Top Bar -->
+                <div class="phone-status-bar">
+                  <span class="phone-time">12:30 PM</span>
+                  <span class="phone-icons">📶 🔋 100%</span>
+                </div>
                 
-                <button class="sim-option-card" data-sim="taxi">
-                  <span class="sim-opt-emoji">🚕</span>
-                  <div class="sim-opt-info">
-                    <h3>카카오T 택시 부르기</h3>
-                    <p>목적지를 검색해 설정하고 기사님 배차받는 과정을 연습합니다.</p>
-                  </div>
-                  <span class="start-btn-label">시작하기</span>
-                </button>
+                <!-- Phone screen content -->
+                <div id="virtual-screen" class="virtual-screen-content">
+                  <!-- Injected dynamically by simulator.js -->
+                </div>
+              </div>
 
-                <button class="sim-option-card" data-sim="youtube">
-                  <span class="sim-opt-emoji">▶️</span>
-                  <div class="sim-opt-info">
-                    <h3>유튜브 영상 검색하고 노래 듣기</h3>
-                    <p>검색 돋보기에 가수의 이름을 적어 음악 플레이어 재생하는 법을 실습합니다.</p>
+              <!-- Right: Interactive Guide Assistant -->
+              <div class="sim-guide-panel">
+                <div class="guide-character">
+                  <div class="avatar-mini active-avatar"></div>
+                  <h4 id="guide-helper-name">손주 가이드</h4>
+                </div>
+                <div class="guide-bubble">
+                  <p id="guide-instruction">안내문구</p>
+                  <button id="guide-speech-btn" class="guide-sound-btn">
+                    🔊 소리로 설명 듣기
+                  </button>
+                </div>
+                
+                <!-- Progress indicator -->
+                <div class="sim-progress-area">
+                  <span class="progress-label">진행 상황</span>
+                  <div class="progress-dots" id="sim-progress-dots">
+                    <!-- Dots injected dynamically -->
                   </div>
-                  <span class="start-btn-label">시작하기</span>
+                </div>
+
+                <div class="sim-hint-area">
+                  <span class="hint-title">💡 힌트</span>
+                  <p id="sim-hint-text">여기에 힌트 텍스트가 표시됩니다.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 5: Voice Diary -->
+      <section id="tab-diary" class="tab-panel">
+        <div class="diary-layout">
+          <h2>✍️ 목소리 일기장</h2>
+          <p>오늘 있었던 일이나 기분을 말해보세요. 손주가 예쁜 사진 일기장으로 기록해 드립니다.</p>
+
+          <div class="diary-workspace">
+            <!-- Left Side: Voice recorder controller -->
+            <div class="diary-controls-panel">
+              <div class="recorder-box">
+                <button id="diary-record-btn" class="record-trigger-btn">
+                  <span class="record-icon">🎙️</span>
+                  <span class="pulse-ring"></span>
                 </button>
+                <p id="diary-record-status">아래 버튼을 눌러 말하기를 시작하세요</p>
+                
+                <div class="rec-buttons">
+                  <button id="diary-start-btn" class="action-btn primary-btn">녹음 시작</button>
+                  <button id="diary-stop-btn" class="action-btn danger-btn" disabled>녹음 완료</button>
+                </div>
+              </div>
+
+              <div class="diary-transcription-box">
+                <h3>📝 내 말소리 (글씨 변환)</h3>
+                <textarea id="diary-transcription-output" placeholder="녹음 시작 후 말을 하면 여기에 글씨가 적힙니다. 직접 키보드로 수정할 수도 있어요." aria-label="일기 내용 편집창"></textarea>
+                <div class="trans-controls">
+                  <button id="diary-clear-btn" class="action-btn secondary-btn">지우기</button>
+                  <button id="diary-generate-btn" class="action-btn success-btn">✨ 일기장 만들기</button>
+                </div>
               </div>
             </div>
 
-            <div id="sim-active-container" class="sim-view" style="display:none;">
-              <div class="sim-header">
-                <button id="sim-back-btn" class="back-link-btn">← 다른 연습으로 돌아가기</button>
-                <h2 id="sim-title">연습 주제</h2>
+            <!-- Right Side: Polaroid Preview Card -->
+            <div class="diary-preview-panel">
+              <h3>🖼️ 손주의 완성 일기장</h3>
+              
+              <div class="polaroid-card" id="polaroid-diary-card">
+                <div class="polaroid-image-area" id="polaroid-image">
+                  <!-- Generates a beautiful gradient based on mood or random -->
+                  <div class="polaroid-mood-illustration">
+                    <span class="mood-emoji">🌞</span>
+                    <span class="mood-text">오늘도 좋은 하루!</span>
+                  </div>
+                </div>
+                <div class="polaroid-content">
+                  <div class="diary-date" id="polaroid-date">2026년 6월 25일 목요일</div>
+                  <div class="diary-text-body" id="polaroid-text">
+                    여기에 작성된 일기 내용이 예쁜 손글씨체로 담깁니다.
+                  </div>
+                  <div class="grandchild-comment-box" id="polaroid-comment-container" style="display:none;">
+                    <div class="comment-header">
+                      <span class="comment-author-avatar"></span>
+                      <strong id="polaroid-comment-author">바름이의 한마디:</strong>
+                    </div>
+                    <p class="comment-body" id="polaroid-comment-text">
+                      오늘 날씨가 더웠을 텐데 고생 많으셨어요 할머니! 시원한 물 한잔 챙겨 드세요.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <button id="diary-save-btn" class="save-card-btn" disabled>
+                💾 일기장 이미지로 다운로드 받기
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 6: Settings -->
+      <section id="tab-settings" class="tab-panel">
+        <div class="settings-layout">
+          <h2>⚙️ 설정 및 API 연결</h2>
+          <p>디지털 손주 서비스를 더욱 스마트하게 이용할 수 있도록 설정을 변경해 보세요.</p>
+
+          <div class="settings-grid">
+            <!-- Voice settings -->
+            <div class="settings-card">
+              <h3>🔊 손주 목소리 속도</h3>
+              <p>글을 소리로 읽어주는 목소리의 속도를 어르신의 귀에 맞게 조절합니다.</p>
+              
+              <div class="slider-group">
+                <span class="slider-label">속도: <strong id="voice-speed-val">1.0</strong>배속</span>
+                <input type="range" id="voice-speed-slider" min="0.6" max="1.4" step="0.1" value="0.9">
+                <div class="slider-ticks">
+                  <span>느리게 (0.6)</span>
+                  <span>보통 (1.0)</span>
+                  <span>빠르게 (1.4)</span>
+                </div>
               </div>
               
-              <div class="sim-workspace">
-                <div class="virtual-device-frame">
-                  <div class="phone-status-bar">
-                    <span class="phone-time">12:30 PM</span>
-                    <span class="phone-icons">📶 🔋 100%</span>
-                  </div>
-                  <div id="virtual-screen" class="virtual-screen-content"></div>
-                </div>
-
-                <div class="sim-guide-panel">
-                  <div class="guide-character">
-                    <div class="avatar-mini active-avatar"></div>
-                    <h4 id="guide-helper-name">손주 가이드</h4>
-                  </div>
-                  <div class="guide-bubble">
-                    <p id="guide-instruction">안내</p>
-                    <button id="guide-speech-btn" class="guide-sound-btn">🔊 소리로 설명 듣기</button>
-                  </div>
-                  <div class="sim-progress-area">
-                    <span class="progress-label">진행 상황</span>
-                    <div class="progress-dots" id="sim-progress-dots"></div>
-                  </div>
-                  <div class="sim-hint-area">
-                    <span class="hint-title">💡 힌트</span>
-                    <p id="sim-hint-text">힌트 표시</p>
-                  </div>
-                </div>
-              </div>
+              <button id="voice-test-btn" class="action-btn secondary-btn" style="margin-top: 15px;">
+                📢 목소리 테스트하기
+              </button>
             </div>
-          </div>
-        </section>
 
-        <!-- Tab 4: Voice Diary -->
-        <section id="tab-diary" class="tab-panel">
-          <div class="diary-layout">
-            <h2>✍️ 목소리 일기장</h2>
-            <p>오늘 있었던 일상 이야기를 말해보세요. 손주가 사진 일기장 카드로 그려 드립니다.</p>
-
-            <div class="diary-workspace">
-              <div class="diary-controls-panel">
-                <div class="recorder-box">
-                  <button id="diary-record-btn" class="record-trigger-btn">
-                    <span class="record-icon">🎙️</span>
-                    <span class="pulse-ring"></span>
-                  </button>
-                  <p id="diary-record-status">아래 버튼을 눌러 말하기를 시작하세요</p>
-                  
-                  <div class="rec-buttons">
-                    <button id="diary-start-btn" class="action-btn primary-btn">녹음 시작</button>
-                    <button id="diary-stop-btn" class="action-btn danger-btn" disabled>녹음 완료</button>
-                  </div>
-                </div>
-
-                <div class="diary-transcription-box">
-                  <h3>📝 내 말소리 (글씨 변환)</h3>
-                  <textarea id="diary-transcription-output" placeholder="말을 하면 여기에 글씨가 채워집니다. 마우스나 자판으로 수정하셔도 됩니다."></textarea>
-                  <div class="trans-controls">
-                    <button id="diary-clear-btn" class="action-btn secondary-btn">지우기</button>
-                    <button id="diary-generate-btn" class="action-btn success-btn">✨ 일기장 만들기</button>
-                  </div>
-                </div>
+            <!-- API Keys settings -->
+            <div class="settings-card">
+              <h3>🤖 실시간 인공지능(AI) 연동</h3>
+              <p>API 키를 입력하면 모의 답변이 아닌 실제 똑똑한 인공지능 손주와 자유롭게 대화할 수 있습니다.</p>
+              
+              <div class="form-group">
+                <label for="ai-provider-select">인공지능 모델 선택</label>
+                <select id="ai-provider-select">
+                  <option value="mock">오프라인 모의 답변 모드 (기본값)</option>
+                  <option value="gemini">Google Gemini AI</option>
+                  <option value="openai">OpenAI ChatGPT</option>
+                </select>
               </div>
 
-              <div class="diary-preview-panel">
-                <h3>🖼️ 손주의 완성 일기장</h3>
-                <div class="polaroid-card" id="polaroid-diary-card">
-                  <div class="polaroid-image-area" id="polaroid-image">
-                    <div class="polaroid-mood-illustration">
-                      <span class="mood-emoji">🌞</span>
-                      <span class="mood-text">행복한 하루</span>
-                    </div>
-                  </div>
-                  <div class="polaroid-content">
-                    <div class="diary-date" id="polaroid-date">2026년 6월 25일 목요일</div>
-                    <div class="diary-text-body" id="polaroid-text">작성된 내용이 담깁니다.</div>
-                    <div class="grandchild-comment-box" id="polaroid-comment-container" style="display:none;">
-                      <div class="comment-header">
-                        <span class="comment-author-avatar"></span>
-                        <strong id="polaroid-comment-author">바름이의 한마디:</strong>
-                      </div>
-                      <p class="comment-body" id="polaroid-comment-text">한마디 편지</p>
-                    </div>
-                  </div>
-                </div>
-                <button id="diary-save-btn" class="save-card-btn" disabled>💾 일기장 이미지로 다운로드 받기</button>
+              <div class="form-group" id="api-key-group" style="display: none;">
+                <label for="api-key-input">인공지능 API 키 입력</label>
+                <input type="password" id="api-key-input" placeholder="AI 서비스 제공업체에서 발급받은 키를 입력하세요.">
+                <span class="input-hint">⚠️ 주의: 입력한 키는 서버에 저장되지 않고 어르신의 브라우저(로컬 저장소)에만 안전하게 보관됩니다.</span>
               </div>
+              
+              <button id="save-settings-btn" class="action-btn primary-btn" style="margin-top: 15px;">
+                설정 저장하기
+              </button>
+            </div>
+
+            <!-- System Info -->
+            <div class="settings-card">
+              <h3>ℹ️ 어플리케이션 정보</h3>
+              <table class="info-table">
+                <tr>
+                  <th>제품명</th>
+                  <td>디지털 손주 SilverFix AI MVP</td>
+                </tr>
+                <tr>
+                  <th>버전</th>
+                  <td>v1.0.0 (배포용 프로토타입)</td>
+                </tr>
+                <tr>
+                  <th>개발 목적</th>
+                  <td>고령층의 디지털 적응력 증진 및 말벗 서비스 제공</td>
+                </tr>
+              </table>
+              
+              <button id="reset-app-btn" class="action-btn danger-btn" style="margin-top: 25px;">
+                🔄 모든 데이터 초기화하기
+              </button>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <!-- Tab 5: Settings -->
-        <section id="tab-settings" class="tab-panel">
-          <div class="settings-layout">
-            <h2>⚙️ 설정 및 API 연결</h2>
-            <p>디지털 손주 서비스를 더욱 스마트하게 이용할 수 있도록 설정을 변경해 보세요.</p>
+    </main>
 
-            <div class="settings-grid">
-              <!-- Persona switcher -->
-              <div class="settings-card">
-                <h3>👦/👧 손주 선택</h3>
-                <p>대화하고 싶은 목소리와 성향의 손주를 골라보세요.</p>
-                <div class="persona-buttons" style="display:flex; gap:16px; margin-top:15px;">
-                  <button class="persona-btn active" data-persona-set="boy" style="flex:1; padding:15px; border-radius:15px; border:2px solid var(--border-color); background:white; cursor:pointer; font-weight:bold; display:flex; align-items:center; gap:8px;">
-                    <span class="avatar-mini boy" style="width:30px; height:30px;"></span> 든든한 바름이
-                  </button>
-                  <button class="persona-btn" data-persona-set="girl" style="flex:1; padding:15px; border-radius:15px; border:2px solid var(--border-color); background:white; cursor:pointer; font-weight:bold; display:flex; align-items:center; gap:8px;">
-                    <span class="avatar-mini girl" style="width:30px; height:30px;"></span> 애교쟁이 다정이
-                  </button>
-                </div>
-              </div>
-
-              <!-- Voice settings -->
-              <div class="settings-card">
-                <h3>🔊 손주 목소리 속도</h3>
-                <p>글을 소리로 읽어주는 속도를 어르신의 귀에 맞추어 조절합니다.</p>
-                <div class="slider-group">
-                  <span class="slider-label">속도: <strong id="voice-speed-val">1.0</strong>배속</span>
-                  <input type="range" id="voice-speed-slider" min="0.6" max="1.4" step="0.1" value="0.9">
-                  <div class="slider-ticks">
-                    <span>느리게 (0.6)</span>
-                    <span>보통 (1.0)</span>
-                    <span>빠르게 (1.4)</span>
-                  </div>
-                </div>
-                <button id="voice-test-btn" class="action-btn secondary-btn" style="margin-top: 15px;">📢 목소리 테스트하기</button>
-              </div>
-
-              <!-- API Keys settings -->
-              <div class="settings-card">
-                <h3>🤖 실시간 인공지능(AI) 연동</h3>
-                <p>API 키를 입력하면 모의 답변이 아닌 실제 똑똑한 인공지능 손주와 자유롭게 대화할 수 있습니다.</p>
-                <div class="form-group">
-                  <label for="ai-provider-select">인공지능 모델 선택</label>
-                  <select id="ai-provider-select">
-                    <option value="mock">오프라인 모의 답변 모드 (기본값)</option>
-                    <option value="gemini">Google Gemini AI</option>
-                    <option value="openai">OpenAI ChatGPT</option>
-                  </select>
-                </div>
-                <div class="form-group" id="api-key-group" style="display: none;">
-                  <label for="api-key-input">인공지능 API 키 입력</label>
-                  <input type="password" id="api-key-input" placeholder="AI 서비스 제공업체에서 발급받은 키를 입력하세요.">
-                </div>
-                <button id="save-settings-btn" class="action-btn primary-btn" style="margin-top: 15px;">설정 저장하기</button>
-              </div>
-
-              <!-- Reset data -->
-              <div class="settings-card">
-                <h3>🔄 초기화</h3>
-                <button id="reset-app-btn" class="action-btn danger-btn" style="width:100%; border-radius:15px; padding:15px;">모든 데이터 초기화하기</button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-      </main>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- INTERACTIVE MOCK CALL OVERLAYS            -->
-    <!-- ========================================== -->
-    <!-- Overlay 1: KakaoTalk VoiceTalk -->
-    <div id="voicetalk-overlay" class="call-overlay" style="display:none;">
-      <div class="call-overlay-bg"></div>
-      <div class="call-overlay-content">
-        <div class="call-header">
-          <span class="call-badge">💬 보이스톡</span>
-          <h2 id="vt-caller-name">손주 바름이</h2>
-          <p id="vt-call-status" class="status-pulse">보이스톡 연결 중...</p>
-        </div>
-        <div class="call-avatar-area">
-          <div class="call-avatar-outer-ring">
-            <div id="vt-avatar-box" class="call-avatar-face boy"></div>
-          </div>
-        </div>
-        <div id="vt-timer-box" class="call-timer" style="visibility:hidden;">00:00</div>
-        <div class="call-controls">
-          <button class="call-circle-btn mute-btn" aria-label="음소거">
-            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 19v4M8 23h8"/></svg>
-            <span>음소거</span>
-          </button>
-          <button id="vt-hangup-btn" class="call-circle-btn hangup-btn" aria-label="통화 종료">
-            <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-5.33-5.33A19.79 19.79 0 0 1 2 4.18 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8 9.91a16 16 0 0 0 2.68 3.4Z"/></svg>
-            <span>종료</span>
-          </button>
-          <button class="call-circle-btn speaker-btn active" aria-label="스피커폰">
-            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-            <span>스피커폰</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Overlay 2: Traditional Dialer Call -->
-    <div id="phonecall-overlay" class="call-overlay" style="display:none;">
-      <div class="call-overlay-bg call-dial-bg"></div>
-      <div id="dial-contact-picker" class="call-overlay-content picker-view">
-        <div class="call-header">
-          <h2>누구에게 전화를 걸까요?</h2>
-          <p>어르신, 아래 버튼을 눌러 전화를 걸어보세요.</p>
-        </div>
-        <div class="contact-picker-grid">
-          <button class="contact-card" data-contact="son">
-            <span class="c-emoji">👨</span>
-            <div class="c-info">
-              <strong>우리 아들</strong>
-              <span>010-9988-7766</span>
-            </div>
-          </button>
-          <button class="contact-card" data-contact="daughter">
-            <span class="c-emoji">👩</span>
-            <div class="c-info">
-              <strong>우리 딸</strong>
-              <span>010-2233-4455</span>
-            </div>
-          </button>
-          <button class="contact-card" data-contact="grandchild">
-            <span class="c-emoji">👦</span>
-            <div class="c-info">
-              <strong>디지털 손주</strong>
-              <span>가상 전화 연결</span>
-            </div>
-          </button>
-        </div>
-        <button id="dial-close-btn" class="action-btn secondary-btn" style="margin-top:20px; width:100%; border-radius:15px; padding:15px;">취소하기</button>
-      </div>
-      <div id="dial-active-screen" class="call-overlay-content" style="display:none;">
-        <div class="call-header">
-          <span class="call-badge-phone">📞 일반 전화</span>
-          <h2 id="phone-caller-name">우리 아들</h2>
-          <p id="phone-call-status" class="status-pulse">전화 연결 중...</p>
-        </div>
-        <div class="call-avatar-area">
-          <div class="call-avatar-outer-ring phone-ring-style">
-            <div id="phone-avatar-box" class="call-avatar-face contact-son"></div>
-          </div>
-        </div>
-        <div id="phone-timer-box" class="call-timer" style="visibility:hidden;">00:00</div>
-        <div class="call-controls">
-          <button class="call-circle-btn mute-btn" aria-label="음소거">
-            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 19v4M8 23h8"/></svg>
-            <span>음소거</span>
-          </button>
-          <button id="phone-hangup-btn" class="call-circle-btn hangup-btn" aria-label="통화 종료">
-            <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-5.33-5.33A19.79 19.79 0 0 1 2 4.18 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8 9.91a16 16 0 0 0 2.68 3.4Z"/></svg>
-            <span>종료</span>
-          </button>
-          <button class="call-circle-btn speaker-btn active" aria-label="스피커폰">
-            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-            <span>스피커폰</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Overlay 3: SMS Text Message overlay -->
-    <div id="textmessage-overlay" class="modal-overlay" style="display:none;">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h3>✉️ 문자 메일 쓰기</h3>
-          <button id="msg-close-btn" class="close-btn" aria-label="문자 모달 닫기">✕</button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label style="font-size: 18px; font-weight: bold; display: block; margin-bottom: 6px;">누구에게 문자를 보낼까요?</label>
-            <div class="msg-recipient-picker">
-              <button class="recipient-opt active" data-recipient="son">우리 아들</button>
-              <button class="recipient-opt" data-recipient="daughter">우리 딸</button>
-              <button class="recipient-opt" data-recipient="grandchild">손주</button>
-            </div>
-          </div>
-          <div class="form-group" style="margin-top: 15px;">
-            <label style="font-size: 18px; font-weight: bold; display: block; margin-bottom: 6px;">보낼 내용 적기</label>
-            <div class="msg-textarea-wrapper">
-              <textarea id="msg-body-input" placeholder="마이크를 켜고 말씀하시거나 글씨를 직접 적어보세요." aria-label="문자 본문 입력"></textarea>
-            </div>
-          </div>
-          <div class="msg-voice-control">
-            <button id="msg-mic-btn" class="msg-mic-trigger">🎤 목소리로 말해서 입력하기</button>
-            <p id="msg-voice-status" style="font-size:16px; margin-top:4px; font-weight:bold; color:var(--text-muted);">눌러서 말을 시작하세요</p>
-          </div>
-          <button id="msg-send-trigger" class="action-btn success-btn" style="margin-top:20px; width:100%; border-radius:15px; font-size:20px; padding:15px;">✉️ 문자 발송하기</button>
-        </div>
-      </div>
-    </div>
+    <!-- Bottom Navigation Bar (Very intuitive for elderly) -->
+    <nav class="app-navbar">
+      <button class="nav-btn active" data-target="tab-dashboard">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">첫화면</span>
+      </button>
+      <button class="nav-btn" data-target="tab-chat">
+        <span class="nav-icon">💬</span>
+        <span class="nav-label">손주대화</span>
+      </button>
+      <button class="nav-btn" data-target="tab-glossary">
+        <span class="nav-icon">📖</span>
+        <span class="nav-label">낱말사전</span>
+      </button>
+      <button class="nav-btn" data-target="tab-simulator">
+        <span class="nav-icon">🎮</span>
+        <span class="nav-label">연습실</span>
+      </button>
+      <button class="nav-btn" data-target="tab-diary">
+        <span class="nav-icon">✍️</span>
+        <span class="nav-label">목소리일기</span>
+      </button>
+      <button class="nav-btn" data-target="tab-settings">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-label">설정</span>
+      </button>
+    </nav>
 
   </div>
 
-  <!-- Beep/Click sound element -->
+  <!-- Audio elements for sound effects -->
   <audio id="audio-click" src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAAAD" preload="auto"></audio>
   
-  <script type="module" src="app.js"></script>
-  <script type="module" src="call.js"></script>
   <script type="module" src="glossary.js"></script>
   <script type="module" src="simulator.js"></script>
   <script type="module" src="diary.js"></script>
   <script type="module" src="chat.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
